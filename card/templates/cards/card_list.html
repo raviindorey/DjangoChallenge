@@ -4,4 +4,36 @@
 <div class="row">
   <h3>Add a new card</h3>
 </div>
+<div class="row">
+  <form class="card-form" action="{% url 'cards:card_list' %}" method="post">
+    {{ card_form.as_table }} {% csrf_token %}
+    <p>
+      <input class="btn btn-primary card-submit" type="submit" value="Add Card" />
+    </p>
+  </form>
+</div>
+<div class="row">
+  <h3>All Cards</h3>
+  
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Card Name</th>
+        <th scope="col">Card Number</th>
+        <th scope="col">Created at</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for card in cards %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td class="card-name" >{{ card.card_name }}</td>
+        <td class="card-number">{{ card.card_number }}</td>
+        <td class="created">{{ card.created }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock content %}
