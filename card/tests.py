@@ -1,6 +1,6 @@
 from django.test import TestCase
 from selenium import webdriver
-
+from .models import Card
 
 class FunctionalTests(TestCase):
     def setUp(self):
@@ -13,3 +13,13 @@ class FunctionalTests(TestCase):
 
     def tearDown(self):
         self.browser.quit()
+
+
+class UnitTest(TestCase):
+    def test_add_a_card(self):
+        card = Card()
+        total_cards = Card.objects.count()
+        card.card_name = 'ABC Bank'
+        card.card_number = 'GR96 0810 0010 0000 0123 4567 890'
+        card.save()
+        self.assertEqual(Card.objects.count(), total_cards + 1)
