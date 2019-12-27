@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if os.environ['ENV'] == 'Production' else True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -37,9 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'card.apps.CardConfig',
+    'debug_toolbar',
+    'error_report',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -47,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'error_report.middleware.ExceptionProcessor'
 ]
 
 ROOT_URLCONF = 'djangochallenge.urls'
@@ -139,4 +144,16 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+# Django Debug Toolbar
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+# django-error-report
+
+ERROR_DETAIL_SETTINGS = {
+    "ERROR_DETAIL_ENABLE": True,
 }
