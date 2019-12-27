@@ -1,12 +1,17 @@
 from django.test import TestCase
 from selenium import webdriver
 import time
+from error_report.models import Error
+from django.core.exceptions import ValidationError
 from faker import Faker
 from .models import Card
 from .forms import CardForm
+from .utils import create_hyphen_string
+
 
 VALID_CARD_NAME = 'ABC Bank'
 VALID_CARD_NUMBER = 'GR96 0810 0010 0000 0123 4567 890'
+INVALID_CARD_NUMBER = VALID_CARD_NUMBER * 2
 
 fake = Faker()
 
@@ -24,7 +29,7 @@ class FunctionalTests(TestCase):
         self.browser.get('http://localhost:8000/cards')
         self.assertIn('card-form', self.browser.page_source)
 
-    def test_card_form_page_submit_adds_a_card(self):
+    def submit_card_form(self):
         self.browser.get('http://localhost:8000/cards')
         card_name_field = self.browser.find_element_by_id('id_card_name')
         card_number_field = self.browser.find_element_by_id('id_card_number')
@@ -33,6 +38,11 @@ class FunctionalTests(TestCase):
         card_name_field.send_keys(temp_card_name)
         card_number_field.send_keys(temp_card_number)
         self.browser.find_element_by_class_name('card-submit').click()
+
+        return (temp_card_name, temp_card_number)
+
+    def test_card_form_page_submit_adds_a_card(self):
+        temp_card_name, temp_card_number = self.submit_card_form()
         time.sleep(2)
         self.assertIn(temp_card_number, self.browser.page_source)
         self.assertIn(temp_card_name, self.browser.page_source)
@@ -66,3 +76,39 @@ class UnitTests(TestCase):
             'card_number': VALID_CARD_NUMBER,
         })
         self.assertEqual(response.status_code, 200)
+
+    def test_card_invalid_card_raise_error(self):
+        def bad_card():
+            invalid_card = Card(
+                card_name=VALID_CARD_NAME,
+                card_number=INVALID_CARD_NUMBER,
+            )
+            invalid_card.full_clean()
+        self.assertRaises(ValidationError, bad_card)
+
+    def bad_request(self):
+        self.client.post('/cards', data={
+            'card_name': VALID_CARD_NAME,
+            'card_number': INVALID_CARD_NUMBER,
+        })
+
+    def raise_and_return_report_html(self):
+        self.assertRaises(ValidationError, self.bad_request)
+        return Error.objects.last().html
+
+    def test_card_form_submit_does_not_add_invalid_card(self):
+        self.assertRaises(ValidationError, self.bad_request)
+
+    def test_card_card_name_present_in_error_report(self):
+        report_html = self.raise_and_return_report_html()
+        self.assertTrue(VALID_CARD_NAME in report_html)
+
+    def test_card_full_card_number_not_in_error_report(self):
+        report_html = self.raise_and_return_report_html()
+        self.assertFalse(INVALID_CARD_NUMBER in report_html)
+
+    def test_card_hyphenated_card_number_is_in_error_report(self):
+        report_html = self.raise_and_return_report_html()
+        self.assertTrue(
+            create_hyphen_string(INVALID_CARD_NUMBER) in report_html
+        )

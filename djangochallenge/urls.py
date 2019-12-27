@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='home'),
     path('cards', include('card.urls', namespace='cards')),
+    path('error', include('error_report.urls')),
 ]
 
 if settings.DEBUG:

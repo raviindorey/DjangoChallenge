@@ -1,4 +1,5 @@
 from django.db import models
+from .utils import create_hyphen_string
 
 
 class Card(models.Model):
@@ -8,3 +9,6 @@ class Card(models.Model):
 
     class Meta:
         ordering = ('-created',)
+
+    def __str__(self):
+        return f"{self.card_name} {create_hyphen_string(self.card_number)}"
