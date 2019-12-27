@@ -4,4 +4,33 @@
 <div class="row">
   <h3>Address Form</h3>
 </div>
+<div class="row">
+  <form action="." method="post">
+    {{ form.as_table }}
+    {% csrf_token %}
+    <p>
+      <input type="submit" value="Add a card" class="btn btn-primary address-submit" />
+    </p>
+  </form>
+</div>
+<div class="row">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Full Address</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for address in addresses %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td class="user-name">{{ address.name }}</td>
+        <td class="user-address">{{ address.full_address }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock content %}
