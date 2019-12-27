@@ -5,7 +5,7 @@
   <h3>Address Form</h3>
 </div>
 <div class="row">
-  <form action="." method="post">
+  <form action="{% url 'address:address_form' %}" method="post">
     {{ form.as_table }}
     {% csrf_token %}
     <p>

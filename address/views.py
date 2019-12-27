@@ -11,6 +11,7 @@ def address_form(request):
         form = UserAddressForm(data=request.POST)
         if form.is_valid():
             cd = form.cleaned_data
+            print(cd)
             user = request.user
             new_address_obj = UserAddress(
                 user=user,
@@ -23,6 +24,11 @@ def address_form(request):
                 country=cd['country'],
             )
             new_address_obj.save()
+            return render(request, 'address/address_form.html', {
+                    'page': 'address_form',
+                    'form': form,
+                    'addresses': addresses,
+                })
     else:
         form = UserAddressForm()
 
