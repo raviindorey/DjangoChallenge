@@ -43,9 +43,28 @@ class FunctionalTests(TestCase):
 
     def test_card_form_page_submit_adds_a_card(self):
         temp_card_name, temp_card_number = self.submit_card_form()
+        table = self.browser.find_element_by_class_name('table').text
+        self.assertIn(temp_card_name, table)
+
+    def test_card_card_list_page_not_contain_card_numbers(self):
+        temp_card_name_1, temp_card_number_1 = self.submit_card_form()
+        temp_card_name_2, temp_card_number_2 = self.submit_card_form()
+        temp_card_name_3, temp_card_number_3 = self.submit_card_form()
         time.sleep(2)
-        self.assertIn(temp_card_number, self.browser.page_source)
-        self.assertIn(temp_card_name, self.browser.page_source)
+        table = self.browser.find_element_by_class_name('table').text
+        self.assertNotIn(temp_card_number_1, table)
+        self.assertNotIn(temp_card_number_2, table)
+        self.assertNotIn(temp_card_number_3, table)
+
+    def test_card_card_list_page__contain_card_name(self):
+        temp_card_name_1, temp_card_number_1 = self.submit_card_form()
+        temp_card_name_2, temp_card_number_2 = self.submit_card_form()
+        temp_card_name_3, temp_card_number_3 = self.submit_card_form()
+        time.sleep(2)
+        table = self.browser.find_element_by_class_name('table').text
+        self.assertIn(temp_card_name_1, table)
+        self.assertIn(temp_card_name_2, table)
+        self.assertIn(temp_card_name_3, table)
 
     def tearDown(self):
         self.browser.quit()

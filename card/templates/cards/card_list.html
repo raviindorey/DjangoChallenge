@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load card_tags %}
+
 {% block content %}
 <div class="row">
   <h3>Add a new card</h3>
@@ -29,7 +31,7 @@
       <tr>
         <th scope="row">{{ forloop.counter }}</th>
         <td class="card-name" >{{ card.card_name }}</td>
-        <td class="card-number">{{ card.card_number }}</td>
+        <td class="card-number">{{ card.card_number|card_number_hyphener }}</td>
         <td class="created">{{ card.created }}</td>
       </tr>
       {% endfor %}
