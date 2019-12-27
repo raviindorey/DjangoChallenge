@@ -24,11 +24,6 @@ def address_form(request):
                 country=cd['country'],
             )
             new_address_obj.save()
-            return render(request, 'address/address_form.html', {
-                    'page': 'address_form',
-                    'form': form,
-                    'addresses': addresses,
-                })
     else:
         form = UserAddressForm()
 
