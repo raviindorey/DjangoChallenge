@@ -48,10 +48,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li {% if page == 'cards' %}class="nav-item active" {% else %}class="nav-item" {% endif %}>
-              <a class="nav-link" href="{% url 'cards:card_list' %}">Cards</a>
+              <a class="nav-link card-link" href="{% url 'cards:card_list' %}">Cards</a>
             </li>
             <li {% if page == 'address_form' %}class="nav-item active" {% else %}class="nav-item" {% endif %}>
-              <a class="nav-link" href="{% url 'address:address_form' %}">Address Form</a>
+              <a class="nav-link address-link" href="{% url 'address:address_form' %}">Address Form</a>
             </li>
           </ul>
         </div>
