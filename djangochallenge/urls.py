@@ -20,8 +20,10 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('', index, name='home'),
     path('cards', include('card.urls', namespace='cards')),
+    path('address', include('address.urls', namespace='address')),
     path('error', include('error_report.urls')),
 ]
 

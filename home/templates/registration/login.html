@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+  <h4>Need an existing user first</h4>
+  <div class="form">
+    <form action="." method="post">
+      {{ form.as_table }}
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}" />
+      <p>
+        <input type="submit" value="Login">
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock content %}

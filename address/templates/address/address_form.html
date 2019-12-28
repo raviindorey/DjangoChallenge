@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% load address_tag %}
+
+{% block content %}
+<div class="row">
+  <h3>Address Form</h3>
+</div>
+<div class="row">
+  <form action="{% url 'address:address_form' %}" method="post">
+    {{ form.as_table }}
+    {% csrf_token %}
+    <p>
+      <input type="submit" value="Add a card" class="btn btn-primary address-submit" />
+    </p>
+  </form>
+</div>
+<div class="row">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Full Address</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for address in addresses %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td class="user-name">{{ address.name }}</td>
+        <td class="user-address">{{ address.full_address|address_cleaner }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}
+
+{% block page_jq %}
+<script>
+  $(document).ready(function() {
+    $("[type='text']").keyup(function(e) {
+      e.preventDefault();
+      $.post(
+        '{% url "address:address_form" %}',
+        {
+          name: $("[name='name']").val(),
+          street_address: $("[name='street_address']").val(),
+          street_address_line2: $("[name='street_address_line2']").val(),
+          zipcode: $("[name='zipcode']").val(),
+          city: $("[name='city']").val(),
+          state: $("[name='state']").val(),
+          country: $("[name='country']").val(),
+          changing_field: e.target.name,
+          changing_value: $(this).val(),
+          request_type: "ajax",
+        },
+        function(response) {
+          if (response["status"] == "created") {
+            $('tbody').prepend(
+              $('<tr>').append(
+                $('<th>', {'scope': 'row'}).text("NEW").add(
+                $('<td>', {'class': 'user-name'}).text(response["name"]).add(
+                $('<td>', {'class': 'user-address'}).text(response["address"])))
+              )
+            );
+          }
+          else if (response["status"] == "updated") {
+            $('.user-name:first').text(response["name"]);
+            $('.user-address:first').text(response["address"]);
+          }
+        }
+      );
+    });
+  });
+</script>
+{% endblock page_jq %}
