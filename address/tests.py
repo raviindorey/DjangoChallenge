@@ -80,7 +80,6 @@ class UnitTests(TestCase):
             We will try to add or update the logged in user address.
             Form is save or updated as user types in the form, so requests are
             ajax and responses are JsonResponse object.
-            All the 
 
             add1 = UserAddress(name="Max", city="Giventown")
             add2 = UserAddress(
